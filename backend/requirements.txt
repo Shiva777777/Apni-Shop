@@ -1,0 +1,35 @@
+# Django Core
+Django==5.0.1
+djangorestframework==3.14.0
+django-cors-headers==4.3.1
+
+# Database
+pymysql==1.1.0
+
+# Authentication
+djangorestframework-simplejwt==5.3.1
+PyJWT==2.8.0
+
+# Image Processing
+Pillow
+
+# Environment Variables
+python-decouple==3.8
+
+# Payment Gateways
+razorpay==1.4.2
+stripe==8.2.0
+
+# Email
+django-anymail==10.2
+
+# Utilities
+django-filter==23.5
+python-dateutil==2.8.2
+
+# Production Server
+
+whitenoise==6.6.0
+
+# API Documentation
+drf-yasg==1.21.7
