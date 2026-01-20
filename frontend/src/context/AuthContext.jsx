@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (email, password, isAdmin = false) => {
         try {
-            const endpoint = isAdmin ? '/accounts/admin/login/' : '/accounts/login/';
+            const endpoint = isAdmin ? 'accounts/admin/login/' : 'accounts/login/';
             const response = await api.post(endpoint, { email, password });
 
             const { tokens, user: userData } = response.data;
@@ -39,7 +39,7 @@ export const AuthProvider = ({ children }) => {
 
     const register = async (userData) => {
         try {
-            const response = await api.post('/accounts/register/', userData);
+            const response = await api.post('accounts/register/', userData);
             return { success: true, data: response.data };
         } catch (error) {
             return {

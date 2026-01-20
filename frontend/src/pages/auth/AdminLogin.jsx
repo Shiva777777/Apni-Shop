@@ -9,6 +9,7 @@ const AdminLogin = () => {
         email: '',
         password: '',
     });
+    const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
@@ -40,12 +41,15 @@ const AdminLogin = () => {
     return (
         <div className="auth-container admin-login">
             <div className="auth-card">
-                <h2>Admin Login</h2>
-                <p className="auth-subtitle">Access the admin dashboard</p>
+                <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+                    <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🔐</div>
+                    <h2 style={{ margin: 0 }}>Admin Panel</h2>
+                    <p style={{ color: '#64748b', margin: '0.5rem 0 0' }}>Secure merchant access</p>
+                </div>
 
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
-                        <label htmlFor="email">Admin Email</label>
+                        <label htmlFor="email">Email Address</label>
                         <input
                             type="email"
                             id="email"
@@ -53,25 +57,55 @@ const AdminLogin = () => {
                             value={formData.email}
                             onChange={handleChange}
                             required
-                            placeholder="Enter admin email"
+                            placeholder="admin@example.com"
+                            style={{ paddingRight: '12px' }}
                         />
                     </div>
 
                     <div className="form-group">
                         <label htmlFor="password">Password</label>
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            required
-                            placeholder="Enter admin password"
-                        />
+                        <div style={{ position: 'relative' }}>
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                id="password"
+                                name="password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                required
+                                placeholder="••••••••"
+                                style={{ paddingRight: '45px' }}
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                style={{
+                                    position: 'absolute',
+                                    right: '12px',
+                                    top: '50%',
+                                    transform: 'translateY(-50%)',
+                                    background: 'none',
+                                    border: 'none',
+                                    padding: '4px',
+                                    cursor: 'pointer',
+                                    fontSize: '18px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    color: '#64748b'
+                                }}
+                            >
+                                {showPassword ? '👁️' : '👁️‍🗨️'}
+                            </button>
+                        </div>
                     </div>
 
-                    <button type="submit" className="btn-primary admin-btn" disabled={loading}>
-                        {loading ? 'Logging in...' : 'Admin Login'}
+                    <button
+                        type="submit"
+                        className="btn-primary"
+                        disabled={loading}
+                        style={{ width: '100%', marginTop: '1rem', padding: '12px', fontSize: '16px' }}
+                    >
+                        {loading ? 'Authenticating...' : 'Sign In to Admin'}
                     </button>
                 </form>
 
