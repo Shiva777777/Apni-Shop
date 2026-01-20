@@ -4,7 +4,6 @@ services:
   # MySQL Database
   db:
     image: mysql:8.0
-    container_name: ecommerce_db_1
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
@@ -23,7 +22,6 @@ services:
   # Django Backend
   backend:
     build: ./backend
-    container_name: ecommerce_backend_1
     restart: always
     command: >
       sh -c "python manage.py migrate &&
