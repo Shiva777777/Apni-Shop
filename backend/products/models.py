@@ -66,7 +66,14 @@ class SubCategory(models.Model):
     
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(f"{self.category.name}-{self.name}")
+            base_slug = slugify(f"{self.category.name}-{self.name}")
+            slug = base_slug
+            counter = 1
+            # Check if slug exists, if so add a counter
+            while SubCategory.objects.filter(slug=slug).exclude(pk=self.pk).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.slug = slug
         super().save(*args, **kwargs)
     
     def __str__(self):
@@ -158,7 +165,14 @@ class Product(models.Model):
     
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.name)
+            base_slug = slugify(self.name)
+            slug = base_slug
+            counter = 1
+            # Check if slug exists, if so add a counter
+            while Product.objects.filter(slug=slug).exclude(pk=self.pk).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.slug = slug
         # Auto-update status based on stock
         if self.stock == 0:
             self.status = self.Status.OUT_OF_STOCK

@@ -15,6 +15,7 @@ import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import Orders from './pages/Orders';
 import AdminDashboard from './pages/admin/Dashboard';
+import AdminCategories from './pages/admin/Categories';
 import AdminProducts from './pages/admin/Products';
 import AdminOrders from './pages/admin/Orders';
 import AdminUsers from './pages/admin/Users';
@@ -92,13 +93,22 @@ function App() {
               }
             />
 
-            {/* Protected Admin Routes */}
             <Route
               path="/admin/dashboard"
               element={
                 <ProtectedRoute adminOnly>
                   <AdminLayout>
                     <AdminDashboard />
+                  </AdminLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/categories"
+              element={
+                <ProtectedRoute adminOnly>
+                  <AdminLayout>
+                    <AdminCategories />
                   </AdminLayout>
                 </ProtectedRoute>
               }

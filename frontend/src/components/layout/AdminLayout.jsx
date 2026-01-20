@@ -15,6 +15,7 @@ const AdminLayout = ({ children }) => {
 
     const menuItems = [
         { label: 'Dashboard', path: '/admin/dashboard', icon: '📊' },
+        { label: 'Categories', path: '/admin/categories', icon: '📁' },
         { label: 'Products', path: '/admin/products', icon: '📦' },
         { label: 'Orders', path: '/admin/orders', icon: '🛍️' },
         { label: 'Users', path: '/admin/users', icon: '👥' },

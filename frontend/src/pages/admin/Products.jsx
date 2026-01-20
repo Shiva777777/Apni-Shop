@@ -24,6 +24,7 @@ const AdminProducts = () => {
     };
     const [formData, setFormData] = useState(initialFormState);
     const [images, setImages] = useState([]);
+    const [editingProduct, setEditingProduct] = useState(null);
 
     useEffect(() => {
         fetchProducts();
@@ -114,6 +115,86 @@ const AdminProducts = () => {
         }
     };
 
+    const handleEdit = (product) => {
+        setEditingProduct(product);
+        setFormData({
+            name: product.name,
+            description: product.description,
+            price: product.price,
+            stock: product.stock,
+            category: product.category,
+            subcategory: product.subcategory || '',
+            brand: product.brand || '',
+            discount_percentage: product.discount_percentage || '0'
+        });
+        setShowModal(true);
+    };
+
+    const handleUpdate = async (e) => {
+        e.preventDefault();
+        setSubmitting(true);
+
+        try {
+            const productData = {
+                ...formData,
+                price: parseFloat(formData.price),
+                stock: parseInt(formData.stock),
+                discount_percentage: parseFloat(formData.discount_percentage)
+            };
+
+            if (!productData.subcategory) delete productData.subcategory;
+
+            await api.put(`/products/products/${editingProduct.id}/`, productData);
+
+            // Upload new images if any
+            if (images.length > 0) {
+                const uploadPromises = Array.from(images).map((file, index) => {
+                    const formData = new FormData();
+                    formData.append('product', editingProduct.id);
+                    formData.append('image', file);
+                    formData.append('is_primary', index === 0);
+                    return api.post('/products/images/', formData, {
+                        headers: { 'Content-Type': 'multipart/form-data' }
+                    });
+                });
+
+                await Promise.all(uploadPromises);
+            }
+
+            toast.success('Product updated successfully! ✨');
+            setShowModal(false);
+            setFormData(initialFormState);
+            setImages([]);
+            setEditingProduct(null);
+            fetchProducts();
+        } catch (error) {
+            console.error('Error updating product:', error);
+            toast.error('Failed to update product');
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
+    const handleDelete = async (productId) => {
+        if (!window.confirm('Are you sure you want to delete this product?')) return;
+
+        try {
+            await api.delete(`/products/products/${productId}/`);
+            toast.success('Product deleted successfully! 🗑️');
+            fetchProducts();
+        } catch (error) {
+            console.error('Error deleting product:', error);
+            toast.error('Failed to delete product');
+        }
+    };
+
+    const handleModalClose = () => {
+        setShowModal(false);
+        setFormData(initialFormState);
+        setImages([]);
+        setEditingProduct(null);
+    };
+
     const filteredSubcategories = subcategories.filter(sub => sub.category === parseInt(formData.category));
 
     return (
@@ -121,7 +202,7 @@ const AdminProducts = () => {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem' }}>
                 <p style={{ color: 'var(--text-muted)', fontSize: '14px', margin: 0 }}>Manage your digital inventory and product catalog</p>
                 <button
-                    onClick={() => setShowModal(true)}
+                    onClick={() => { setEditingProduct(null); setFormData(initialFormState); setImages([]); setShowModal(true); }}
                     className="btn btn-primary"
                     style={{
                         padding: '12px 24px',
@@ -213,8 +294,8 @@ const AdminProducts = () => {
                                     </td>
                                     <td style={{ padding: '16px 24px' }}>
                                         <div style={{ display: 'flex', gap: '10px' }}>
-                                            <button style={{ background: 'none', fontSize: '18px', cursor: 'pointer' }}>⚙️</button>
-                                            <button style={{ background: 'none', fontSize: '18px', cursor: 'pointer' }}>🗑️</button>
+                                            <button onClick={() => handleEdit(product)} style={{ background: 'none', fontSize: '18px', cursor: 'pointer', border: 'none' }} title="Edit">⚙️</button>
+                                            <button onClick={() => handleDelete(product.id)} style={{ background: 'none', fontSize: '18px', cursor: 'pointer', border: 'none' }} title="Delete">🗑️</button>
                                         </div>
                                     </td>
                                 </tr>
@@ -249,13 +330,13 @@ const AdminProducts = () => {
                     }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem' }}>
                             <div>
-                                <h2 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '4px' }}>Add New Product</h2>
+                                <h2 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '4px' }}>{editingProduct ? 'Edit Product' : 'Add New Product'}</h2>
                                 <p style={{ color: 'var(--text-muted)', fontSize: '13px' }}>Define product attributes for your digital storefront</p>
                             </div>
-                            <button onClick={() => setShowModal(false)} style={{ background: 'none', fontSize: '24px', cursor: 'pointer', color: 'var(--text-muted)' }}>×</button>
+                            <button onClick={handleModalClose} style={{ background: 'none', fontSize: '24px', cursor: 'pointer', color: 'var(--text-muted)', border: 'none' }}>×</button>
                         </div>
 
-                        <form onSubmit={handleSubmit}>
+                        <form onSubmit={editingProduct ? handleUpdate : handleSubmit}>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
                                 <div style={{ gridColumn: '1 / -1' }} className="form-group">
                                     <label>Product Name</label>
@@ -327,9 +408,9 @@ const AdminProducts = () => {
                             </div>
 
                             <div style={{ marginTop: '3rem', display: 'flex', gap: '1rem' }}>
-                                <button type="button" onClick={() => setShowModal(false)} className="btn btn-outline" style={{ flex: 1, padding: '14px' }}>Discard</button>
+                                <button type="button" onClick={handleModalClose} className="btn btn-outline" style={{ flex: 1, padding: '14px' }}>Discard</button>
                                 <button type="submit" disabled={submitting} className="btn btn-primary" style={{ flex: 2, padding: '14px' }}>
-                                    {submitting ? 'Synthesizing...' : 'Finalize Product'}
+                                    {submitting ? (editingProduct ? 'Updating...' : 'Synthesizing...') : (editingProduct ? 'Update Product' : 'Finalize Product')}
                                 </button>
                             </div>
                         </form>
