@@ -49,7 +49,6 @@ services:
   # React Frontend
   frontend:
     build: ./frontend
-    container_name: ecommerce_frontend_1
     restart: always
     ports:
       - "80:80"
