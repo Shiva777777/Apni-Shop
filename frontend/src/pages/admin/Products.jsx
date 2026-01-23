@@ -46,7 +46,7 @@ const AdminProducts = () => {
 
     const fetchCategories = async () => {
         try {
-            const response = await api.get('/products/categories/');
+            const response = await api.get('/admin/categories/');
             setCategories(response.data.results || response.data);
         } catch (error) {
             console.error('Error fetching categories:', error);
@@ -55,7 +55,7 @@ const AdminProducts = () => {
 
     const fetchSubCategories = async () => {
         try {
-            const response = await api.get('/products/subcategories/');
+            const response = await api.get('/admin/subcategories/');
             setSubcategories(response.data.results || response.data);
         } catch (error) {
             console.error('Error fetching subcategories:', error);

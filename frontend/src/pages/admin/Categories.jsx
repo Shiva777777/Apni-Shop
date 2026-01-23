@@ -26,7 +26,7 @@ const AdminCategories = () => {
 
     const fetchCategories = async () => {
         try {
-            const response = await api.get('/admin-dashboard/categories/');
+            const response = await api.get('/admin/categories/');
             setCategories(response.data);
             setLoading(false);
         } catch (error) {
@@ -38,7 +38,7 @@ const AdminCategories = () => {
 
     const fetchSubcategories = async () => {
         try {
-            const response = await api.get('/admin-dashboard/subcategories/');
+            const response = await api.get('/admin/subcategories/');
             setSubcategories(response.data);
         } catch (error) {
             console.error('Error fetching subcategories:', error);
@@ -59,12 +59,12 @@ const AdminCategories = () => {
             }
 
             if (editingItem) {
-                await api.put(`/admin-dashboard/categories/${editingItem.id}/`, formData, {
+                await api.put(`/admin/categories/${editingItem.id}/`, formData, {
                     headers: { 'Content-Type': 'multipart/form-data' }
                 });
                 toast.success('Category updated successfully! ✨');
             } else {
-                await api.post('/admin-dashboard/categories/', formData, {
+                await api.post('/admin/categories/', formData, {
                     headers: { 'Content-Type': 'multipart/form-data' }
                 });
                 toast.success('Category created successfully! 🎉');
@@ -85,7 +85,7 @@ const AdminCategories = () => {
     const handleDeleteCategory = async (id) => {
         if (!window.confirm('Are you sure you want to delete this category?')) return;
         try {
-            await api.delete(`/admin-dashboard/categories/${id}/`);
+            await api.delete(`/admin/categories/${id}/`);
             toast.success('Category deleted successfully!');
             fetchCategories();
         } catch (error) {
@@ -106,10 +106,10 @@ const AdminCategories = () => {
         setSubmitting(true);
         try {
             if (editingItem) {
-                await api.put(`/admin-dashboard/subcategories/${editingItem.id}/`, subcategoryForm);
+                await api.put(`/admin/subcategories/${editingItem.id}/`, subcategoryForm);
                 toast.success('SubCategory updated successfully! ✨');
             } else {
-                await api.post('/admin-dashboard/subcategories/', subcategoryForm);
+                await api.post('/admin/subcategories/', subcategoryForm);
                 toast.success('SubCategory created successfully! 🎉');
             }
             setShowSubcategoryModal(false);
@@ -127,7 +127,7 @@ const AdminCategories = () => {
     const handleDeleteSubcategory = async (id) => {
         if (!window.confirm('Are you sure you want to delete this subcategory?')) return;
         try {
-            await api.delete(`/admin-dashboard/subcategories/${id}/`);
+            await api.delete(`/admin/subcategories/${id}/`);
             toast.success('SubCategory deleted successfully!');
             fetchSubcategories();
         } catch (error) {

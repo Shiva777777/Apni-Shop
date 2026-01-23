@@ -8,66 +8,17 @@ from products.models import Category, SubCategory
 
 # Define categories with subcategories
 categories_data = {
-    'Electronics': [
-        'Smartphones',
-        'Laptops',
-        'Tablets',
-        'Smartwatches',
-        'Headphones',
-        'Cameras',
-        'Gaming Consoles'
-    ],
-    'Fashion': [
-        'Men Clothing',
-        'Women Clothing',
-        'Kids Clothing',
-        'Footwear',
-        'Accessories',
-        'Ethnic Wear'
-    ],
-    'Home & Kitchen': [
-        'Kitchen Appliances',
-        'Furniture',
-        'Bedding',
-        'Cookware',
-        'Home Decor',
-        'Lighting'
-    ],
-    'Sports & Outdoors': [
-        'Sports Equipment',
-        'Outdoor Gear',
-        'Fitness Equipment',
-        'Camping Gear',
-        'Water Sports'
-    ],
-    'Books & Media': [
-        'Books',
-        'E-books',
-        'Movies',
-        'Music',
-        'Audiobooks'
-    ],
-    'Beauty & Personal Care': [
-        'Skincare',
-        'Hair Care',
-        'Makeup',
-        'Fragrances',
-        'Personal Care'
-    ],
-    'Toys & Games': [
-        'Action Figures',
-        'Board Games',
-        'Puzzles',
-        'LEGO',
-        'Baby Toys',
-        'Educational Toys'
-    ],
-    'Automotive': [
-        'Car Accessories',
-        'Bike Accessories',
-        'Car Care',
-        'Tools & Equipment'
-    ]
+    'Electronics': ['Mobiles', 'Laptops', 'Accessories'],
+    'Fashion': ['Men', 'Women', 'Kids', 'Footwear'],
+    'Home & Kitchen': ['Furniture', 'Appliances', 'Decor'],
+    'Beauty & Personal Care': [],
+    'Grocery': [],
+    'Sports & Fitness': [],
+    'Toys & Baby': [],
+    'Automotive': [],
+    'Books & Stationery': [],
+    'Tools & Hardware': [],
+    'Health & Wellness': []
 }
 
 # Create categories and subcategories
