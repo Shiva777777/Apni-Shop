@@ -7,7 +7,11 @@ from .views import (
     PasswordResetRequestView,
     PasswordResetConfirmView,
     EmailVerificationView,
-    UserListView
+    UserListView,
+    AdminCreateView,
+    AdminListView,
+    AdminUpdateView,
+    AdminDeleteView
 )
 from rest_framework_simplejwt.views import TokenRefreshView
 
@@ -29,5 +33,13 @@ urlpatterns = [
     
     # Email Verification
     path('verify-email/', EmailVerificationView.as_view(), name='verify-email'),
+    
+    # User Management (Admin)
     path('users/', UserListView.as_view(), name='admin-users'),
+    
+    # Admin Management
+    path('admins/', AdminListView.as_view(), name='admin-list'),
+    path('admins/create/', AdminCreateView.as_view(), name='admin-create'),
+    path('admins/<int:pk>/update/', AdminUpdateView.as_view(), name='admin-update'),
+    path('admins/<int:pk>/delete/', AdminDeleteView.as_view(), name='admin-delete'),
 ]

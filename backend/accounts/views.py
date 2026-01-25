@@ -194,3 +194,127 @@ class UserListView(generics.ListAPIView):
         if not self.request.user.is_admin:
             return User.objects.none()
         return super().get_queryset()
+
+
+class AdminCreateView(APIView):
+    """
+    Create new admin user (only accessible by existing admins)
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def post(self, request):
+        # Check if user is admin
+        if not request.user.is_admin:
+            return Response({
+                'error': 'Only admins can create admin users.'
+            }, status=status.HTTP_403_FORBIDDEN)
+        
+        from .serializers import AdminCreateSerializer
+        serializer = AdminCreateSerializer(data=request.data)
+        
+        if serializer.is_valid():
+            user = serializer.save()
+            
+            # Return created admin details with generated password
+            password = request.data.get('password', 'admin@123')
+            
+            from .serializers import UserProfileSerializer
+            return Response({
+                'message': 'Admin user created successfully',
+                'admin': UserProfileSerializer(user).data,
+                'generated_password': password,
+                'note': 'Please change this password after first login'
+            }, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AdminListView(generics.ListAPIView):
+    """
+    List all admin users
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get(self, request):
+        # Check if user is admin
+        if not request.user.is_admin:
+            return Response({
+                'error': 'Only admins can view admin list.'
+            }, status=status.HTTP_403_FORBIDDEN)
+        
+        from .serializers import UserProfileSerializer
+        admins = User.objects.filter(is_admin=True).order_by('-created_at')
+        serializer = UserProfileSerializer(admins, many=True)
+        
+        return Response({
+            'count': admins.count(),
+            'admins': serializer.data
+        }, status=status.HTTP_200_OK)
+
+
+class AdminUpdateView(APIView):
+    """
+    Update admin user details
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def patch(self, request, pk):
+        # Check if user is admin
+        if not request.user.is_admin:
+            return Response({
+                'error': 'Only admins can update admin users.'
+            }, status=status.HTTP_403_FORBIDDEN)
+        
+        try:
+            user = User.objects.get(pk=pk)
+        except User.DoesNotExist:
+            return Response({
+                'error': 'User not found.'
+            }, status=status.HTTP_404_NOT_FOUND)
+        
+        from .serializers import AdminUpdateSerializer
+        serializer = AdminUpdateSerializer(user, data=request.data, partial=True)
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response({
+                'message': 'Admin user updated successfully',
+                'admin': serializer.data
+            }, status=status.HTTP_200_OK)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AdminDeleteView(APIView):
+    """
+    Delete/Deactivate admin user
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def delete(self, request, pk):
+        # Check if user is admin
+        if not request.user.is_admin:
+            return Response({
+                'error': 'Only admins can delete admin users.'
+            }, status=status.HTTP_403_FORBIDDEN)
+        
+        # Prevent deleting self
+        if request.user.id == pk:
+            return Response({
+                'error': 'You cannot delete your own admin account.'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            user = User.objects.get(pk=pk)
+        except User.DoesNotExist:
+            return Response({
+                'error': 'User not found.'
+            }, status=status.HTTP_404_NOT_FOUND)
+        
+        # Deactivate instead of delete (soft delete)
+        user.is_active = False
+        user.save()
+        
+        return Response({
+            'message': 'Admin user deactivated successfully'
+        }, status=status.HTTP_200_OK)

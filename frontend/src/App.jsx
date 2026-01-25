@@ -19,6 +19,7 @@ import AdminCategories from './pages/admin/Categories';
 import AdminProducts from './pages/admin/Products';
 import AdminOrders from './pages/admin/Orders';
 import AdminUsers from './pages/admin/Users';
+import Inventory from './pages/admin/Inventory';
 import AdminLayout from './components/layout/AdminLayout';
 import UserLayout from './components/layout/UserLayout';
 
@@ -139,6 +140,16 @@ function App() {
                 <ProtectedRoute adminOnly>
                   <AdminLayout>
                     <AdminUsers />
+                  </AdminLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/inventory"
+              element={
+                <ProtectedRoute adminOnly>
+                  <AdminLayout>
+                    <Inventory />
                   </AdminLayout>
                 </ProtectedRoute>
               }

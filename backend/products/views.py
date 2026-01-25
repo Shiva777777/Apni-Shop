@@ -19,7 +19,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
     """Category CRUD operations"""
     queryset = Category.objects.filter(is_active=True)
     serializer_class = CategorySerializer
-    lookup_field = 'slug'
+    # lookup_field = 'slug'  # Temporarily disabled for testing
     
     def get_permissions(self):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
@@ -31,7 +31,7 @@ class SubCategoryViewSet(viewsets.ModelViewSet):
     """SubCategory CRUD operations"""
     queryset = SubCategory.objects.filter(is_active=True)
     serializer_class = SubCategorySerializer
-    lookup_field = 'slug'
+    # lookup_field = 'slug'  # Temporarily disabled for testing
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['category']
     
@@ -44,7 +44,7 @@ class SubCategoryViewSet(viewsets.ModelViewSet):
 class ProductViewSet(viewsets.ModelViewSet):
     """Product CRUD and filtering"""
     queryset = Product.objects.select_related('category', 'subcategory').prefetch_related('images', 'reviews')
-    lookup_field = 'slug'
+    # lookup_field = 'slug'  # Temporarily disabled for testing
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['category', 'subcategory', 'status']
     search_fields = ['name', 'description', 'brand']
