@@ -61,7 +61,7 @@ volumes:
   static_volume:
   media_volume:
 
-
+    # Networks
 networks:
   ecommerce_network:
     driver: bridge
