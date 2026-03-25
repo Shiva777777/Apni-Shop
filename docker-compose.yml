@@ -1,4 +1,4 @@
-version: '3.8'
+
 
 services:
   # ── MySQL Database ──────────────────────────────────
@@ -6,10 +6,10 @@ services:
     image: mysql:8.0
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-Om7771913285}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-apnishop}
     ports:
-      - "3308:3306"
+      - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
@@ -84,7 +84,7 @@ services:
     container_name: grafana
     restart: always
     ports:
-      - "3000:3000"
+      - "3002:3000"
     volumes:
       - ./docker/monitoring/grafana/provisioning:/etc/grafana/provisioning
       - grafana_data:/var/lib/grafana
