@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  # MySQL Database
+  # ── MySQL Database ──────────────────────────────────
   db:
     image: mysql:8.0
     restart: always
@@ -13,21 +13,23 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
-      - ecommerce_network
+      - app_network
     healthcheck:
       test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
       timeout: 20s
       retries: 10
 
-  # Django Backend
+  # ── Django Backend ──────────────────────────────────
   backend:
-    build: ./backend
+    build:
+      context: ./backend
+      dockerfile: ../docker/backend.Dockerfile
     restart: always
     command: >
       sh -c "python manage.py migrate &&
              python manage.py collectstatic --noinput &&
              python initialize_data.py &&
-             gunicorn ecommerce.wsgi:application --bind 0.0.0.0:8000 --workers 3"
+             gunicorn core.wsgi:application --bind 0.0.0.0:8000 --workers 3"
     volumes:
       - ./backend:/app
       - static_volume:/app/staticfiles
@@ -43,25 +45,64 @@ services:
       db:
         condition: service_healthy
     networks:
-      - ecommerce_network
+      - app_network
 
-  # React Frontend
+  # ── Vite Frontend (Nginx) ───────────────────────────
   frontend:
-    build: ./frontend
+    build:
+      context: .
+      dockerfile: ./docker/frontend.Dockerfile
     restart: always
     ports:
       - "3001:80"
     depends_on:
       - backend
     networks:
-      - ecommerce_network
+      - app_network
+
+  # ── Prometheus (Monitoring) ───────────────────────
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    restart: always
+    volumes:
+      - ./docker/monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    ports:
+      - "9090:9090"
+    networks:
+      - app_network
+
+  # ── Grafana (Visualization) ───────────────────────
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: always
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./docker/monitoring/grafana/provisioning:/etc/grafana/provisioning
+      - grafana_data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin # Default password for login
+      - GF_USERS_ALLOW_SIGN_UP=false
+    depends_on:
+      - prometheus
+    networks:
+      - app_network
 
 volumes:
   mysql_data:
   static_volume:
   media_volume:
+  prometheus_data:
+  grafana_data:
 
-    # Networks
 networks:
-  ecommerce_network:
+  app_network:
     driver: bridge

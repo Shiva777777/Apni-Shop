@@ -34,3 +34,6 @@ mysqlclient==2.2.4
 
 # API Documentation
 drf-yasg==1.21.7
+
+# Monitoring
+django-prometheus==2.3.1

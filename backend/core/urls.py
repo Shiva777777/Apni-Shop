@@ -1,5 +1,5 @@
 """
-URL Configuration for ecommerce project
+URL Configuration for Apni Shop project
 """
 from django.contrib import admin
 from django.urls import path, include
@@ -38,6 +38,9 @@ urlpatterns = [
     path('api/wishlist/', include('wishlist.urls')),
     path('api/payments/', include('payments.urls')),
     path('api/admin/', include('admin_dashboard.urls')),
+
+    # Monitoring
+    path('', include('django_prometheus.urls')),
 ]
 
 # Serve media files in development

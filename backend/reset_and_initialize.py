@@ -9,9 +9,16 @@ OR from local:
 """
 
 import os
+import sys
 import django
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ecommerce.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
+
+# Add 'apps' directory to Python path
+apps_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'apps')
+if apps_dir not in sys.path:
+    sys.path.insert(0, apps_dir)
+
 django.setup()
 
 from products.models import Category, SubCategory, Product

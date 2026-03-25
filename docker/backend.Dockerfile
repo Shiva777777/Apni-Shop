@@ -1,11 +1,12 @@
-# Use Python 3.11 as base image
+# ---------- Backend Dockerfile ----------
+# Build: docker build -f docker/backend.Dockerfile ./backend
 FROM python:3.11-slim
 
-# Set environment variables
+# Environment
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# Set work directory
+# Work directory
 WORKDIR /app
 
 # Install system dependencies
@@ -32,4 +33,4 @@ EXPOSE 8000
 # Run migrations and start server
 CMD python manage.py migrate && \
     python manage.py collectstatic --noinput && \
-    gunicorn ecommerce.wsgi:application --bind 0.0.0.0:8000 --workers 3
+    gunicorn core.wsgi:application --bind 0.0.0.0:8000 --workers 3

@@ -6,7 +6,13 @@ import sys
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ecommerce.settings')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
+
+    # Add 'apps' directory to Python path so app imports stay clean
+    apps_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'apps')
+    if apps_dir not in sys.path:
+        sys.path.insert(0, apps_dir)
+
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

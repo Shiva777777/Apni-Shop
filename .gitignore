@@ -1,0 +1,50 @@
+# ── ENVIRONMENT ────────────────────────────────────
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+
+# ── PYTHON (Django) ───────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv/
+.eggs/
+*.egg-info/
+*.egg
+db.sqlite3
+db.sqlite3-journal
+/backend/staticfiles/
+/backend/media/
+/backend/logs/
+
+# ── NODE (Vite/React) ─────────────────────────────
+node_modules/
+/frontend/dist/
+/frontend/dist-ssr/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.eslintcache
+
+# ── DOCKER ─────────────────────────────────────────
+/docker-compose.override.yml
+
+# ── IDE ────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# ── OS ─────────────────────────────────────────────
+Thumbs.db
+desktop.ini

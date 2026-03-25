@@ -1,0 +1,14 @@
+global:
+  scrape_interval: 15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+  evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
+
+# Scrape configurations
+scrape_configs:
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  - job_name: "django"
+    metrics_path: "/metrics"
+    static_configs:
+      - targets: ["backend:8000"] # We use 'backend' because docker-compose service name.
